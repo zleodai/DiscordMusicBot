@@ -56,7 +56,9 @@ async def processMessage(message: discord.Message):
         print(error)
 
 def runBot():
-    discord_token = 'MTI5NjI5MzkxMjUxNTk3MzEzMA.Gz2UbQ.OaKrpbIuBXBTvEsM3PIfWhVODNepXj4egTK8uI'
+    f = open("discordBotToken.txt", "r")
+    discord_token = f.read()
+    f.close()
     intents = discord.Intents.all()
     client = discord.Client(intents=intents)
 
