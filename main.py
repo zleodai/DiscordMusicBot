@@ -1,3 +1,4 @@
-import dogebot
+from dogebot import dogebot
 if __name__ =='__main__':
-    dogebot.runBot()
+    bot = dogebot()
+    bot.runBot()
