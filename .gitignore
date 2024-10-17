@@ -1,1 +1,2 @@
-discordBotToken.*
+#Ignore token text
+*.txt
