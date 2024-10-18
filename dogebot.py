@@ -4,6 +4,9 @@ import time
 
 class dogebot():
     def __init__(self):
+        self.intents: discord.Intents = None
+        self.client: discord.Client = None
+        
         self.connectedToVC: bool = False
         self.voiceClient: discord.VoiceClient = None
         
@@ -36,17 +39,6 @@ class dogebot():
         
     #On Event Functions
     #------------------
-    def handle_user_messages(self, msg: discord.Message) -> tuple[str, bool, discord.Message]:
-        print(f"Got Message: {msg.content}")
-        print(f"From Author: {msg.author.name}")
-        message = msg.content.lower() #Converts all inputs to lower case
-        if (msg.author.name == 'retrogarde'):
-            return ('I Love you pookie <@459482369275985921>', False, None)
-        
-        if(len(message) > 3 and message.startswith("play")):
-            return ('sir yes sir', True, msg)
-        return None
-    
     async def processMessage(self, message: discord.Message) -> None:
         try:
             botfeedbackPacket = self.handle_user_messages(message)
@@ -56,25 +48,35 @@ class dogebot():
                     await self.playYTLink(botfeedbackPacket[2])
                 else:
                     await message.channel.send(botfeedbackPacket[0])
+                    
         except Exception as error:
             print(error)
+    
+    def handle_user_messages(self, msg: discord.Message) -> tuple[str, bool, discord.Message]:
+        message = msg.content.lower()
+        
+        if(len(message) > 3 and message.startswith("play")):
+            return ('sir yes sir', True, msg)
+        
+        return None
     
     
     def runBot(self) -> None:
         f = open("discordBotToken.txt", "r")
         discord_token = f.read()
         f.close()
-        intents = discord.Intents.all()
-        client = discord.Client(intents=intents)
+        
+        self.intents = discord.Intents.all()
+        self.client = discord.Client(intents=self.intents)
 
-        @client.event
+        @self.client.event
         async def on_ready():
-            print({client.user}, 'is live')
+            print({self.client.user}, 'is live')
 
-        @client.event
+        @self.client.event
         async def on_message(message):
-            if message.author == client.user:
+            if message.author == self.client.user:
                 return
             await self.processMessage(message)
 
-        client.run(discord_token)
+        self.client.run(discord_token)
